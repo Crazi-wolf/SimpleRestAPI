@@ -46,8 +46,6 @@ public class IndividualServiceImpl implements IndividualService {
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			JsonParser parser = new JsonFactory().createParser(new URL("http://codeward.ca/content/individual.json"));
-			
-			System.out.println(parser.currentTokenId());
 			Individual p1 = mapper.readValue(parser, Individual.class);
 			resp = mapper.writeValueAsString(p1);
 		}
@@ -68,7 +66,6 @@ public class IndividualServiceImpl implements IndividualService {
 			ObjectMapper mapper = new ObjectMapper();
 			Map<String,Individual> pMap = mapper.readValue(new URL("http://codeward.ca/content/individual.json"), Map.class);
 			for(Map.Entry<String,Individual> entry : pMap.entrySet()) {
-				System.out.println(entry + "\n");
 				resp = mapper.writeValueAsString(entry);
 			}
 		}
