@@ -4,7 +4,7 @@ import javax.ws.rs.core.Response;
 import ca.codeward.model.Individual;
 
 public interface IndividualService {
-	public Response addIndividual(Individual p);
+	public Response addIndividual();
 	
 	public Response deleteIndividual(int id);
 	
