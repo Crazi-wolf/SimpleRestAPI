@@ -1,1 +1,33 @@
-[{"key":1234,"lastName":"A-AGASSI","firstName":"ANDRE","titlePrefix":"MR","birthDt":"1954-02-02","genderCd":"M","residenceAddress":{"addressLine1":"278 FERRIS RD","city":"TORONTO","territory":"ON","postalCode":"M4B 1H6"}},{"key":4321,"lastName":"WARD","firstName":"MATTHEW","titlePrefix":"MR","birthDt":"1954-02-02","genderCd":"M","residenceAddress":{"addressLine1":"278 FERRIS RD","city":"TORONTO","territory":"ON","postalCode":"M4B 1H6"}}]
+{
+	"Individual" : 
+	[
+	{
+		"key": 1234,
+		"lastName": "A-AGASSI",
+		"firstName": "ANDRE",
+		"titlePrefix": "MR",
+		"birthDt": "1954-02-02",
+		"genderCd": "M",
+		"residenceAddress": {
+			"addressLine1": "278 FERRIS RD",
+			"city": "TORONTO",
+			"territory": "ON",
+			"postalCode": "M4B 1H6"
+		}
+	},
+	{
+		"key": 4321,
+		"lastName": "WARD",
+		"firstName": "MATTHEW",
+		"titlePrefix": "MR",
+		"birthDt": "1954-02-02",
+		"genderCd": "M",
+		"residenceAddress": {
+			"addressLine1": "278 FERRIS RD",
+			"city": "TORONTO",
+			"territory": "ON",
+			"postalCode": "M4B 1H6"
+		}
+	}
+	]
+}

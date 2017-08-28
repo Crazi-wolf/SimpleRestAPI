@@ -1,5 +1,6 @@
 package ca.codeward.service;
 
+import javax.swing.event.ListSelectionEvent;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -10,18 +11,24 @@ import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.Response;
 
 import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.core.JsonEncoding;
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonGenerator;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.JsonToken;
 import com.fasterxml.jackson.databind.DeserializationFeature;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import ca.codeward.model.*;
@@ -33,46 +40,33 @@ public class IndividualServiceImpl implements IndividualService {
 	@POST
 	//@Consumes("application/json")
 	public Response addIndividual() {
-		ObjectMapper mapper = new ObjectMapper();
 		String resp = "Error generating json - addindividual()";
-		List<Individual> iList = new ArrayList<Individual>();
-		
-		Individual i1 = new Individual();
-		i1.setKey(1234);
-		i1.setLastName("A-AGASSI");
-		i1.setFirstName("ANDRE");
-		i1.setTitlePrefix("MR");
-		i1.setBirthDt("1954-02-02");
-		i1.setGenderCd('M');
-		ResidenceAddress r1 = new ResidenceAddress();
-		r1.setAddressLine1("278 FERRIS RD");
-		r1.setCity("TORONTO");
-		r1.setTerritory("ON");
-		r1.setPostalCode("M4B 1H6");
-		i1.setResidenceAddress(r1);
-		iList.add(i1);
-		
-		Individual i2 = new Individual();
-		i2.setKey(4321);
-		i2.setLastName("WARD");
-		i2.setFirstName("MATTHEW");
-		i2.setTitlePrefix("MR");
-		i2.setBirthDt("1954-02-02");
-		i2.setGenderCd('M');
-		ResidenceAddress r2 = new ResidenceAddress();
-		r2.setAddressLine1("278 FERRIS RD");
-		r2.setCity("TORONTO");
-		r2.setTerritory("ON");
-		r2.setPostalCode("M4B 1H6");
-		i2.setResidenceAddress(r2);
-		iList.add(i2);
-		
+		JsonFactory jf = new JsonFactory();
+		File jsonDoc = new File("Z:/projects/Eclipse/SimpleRestAPI/individual_test.json");
 		try {
-			JsonFactory f = new JsonFactory();
-			//
-			// Can't post to remote server like below...
-			mapper.writeValue(new File("Z:/projects/Eclipse/SimpleRestAPI/individual.json"), (Object)iList);
-			resp = mapper.writeValueAsString(iList);
+			JsonGenerator gen = jf.createGenerator(jsonDoc, JsonEncoding.UTF8);
+			gen.writeStartObject();
+			gen.writeFieldName("Individual");
+			gen.writeStartArray();
+			gen.writeStartObject();
+			gen.writeNumberField("key", 1234);
+			gen.writeStringField("lastName", "WARD");
+			gen.writeStringField("firstName", "MATT");
+			gen.writeStringField("titlePrefix", "MR");
+			gen.writeStringField("birthDt", "1987-07-28");
+			gen.writeStringField("genderCd", "M");
+			gen.writeFieldName("residenceAddress");
+			gen.writeStartObject();
+			gen.writeStringField("addressLine1", "85-320 Westminster Ave.");
+			gen.writeStringField("city", "LONDON");
+			gen.writeStringField("territory", "ON");
+			gen.writeStringField("postalCode", "N6C 5H5");
+			gen.writeEndObject();
+			gen.writeEndObject();
+			gen.writeEndArray();
+			gen.writeEndObject();
+			gen.close();
+			resp = "JSON file created successfully";
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -91,8 +85,6 @@ public class IndividualServiceImpl implements IndividualService {
 	@Path("/{key}")
 	public Response getIndividual(@PathParam("key") String id) {
 		String resp = "Error loading json - getIndividual()/{key}";
-		// List read not working for me, was trying to generate one via addIndividual, but couldn't write to remote json file.
-		// Then I have to figure out how to read specific individual based on provided key...
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
@@ -114,18 +106,16 @@ public class IndividualServiceImpl implements IndividualService {
 	@Produces("application/json")
 	public Response getAllIndividuals() {
 		String resp = "Error loading json - getAllIndividuals()";
+		ObjectMapper om = new ObjectMapper();
 		try {
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
-			Individual p = mapper.readValue(new URL("http://codeward.ca/content/individual.json"), Individual.class);
-			resp = mapper.writeValueAsString(p);
-			//Map<String,Individual> pMap = mapper.readValue(new URL("http://codeward.ca/content/individual.json"), Map.class);
-//			
-		}
-		catch(JsonParseException e) {
+			JsonNode jn = om.readTree(new File("Z:/projects/Eclipse/SimpleRestAPI/individual_test.json"));
+			JsonNode in = jn.path("Individual");
+			String key = in.path("key").asText();
+			resp = key;			
+			
+		} catch (JsonParseException e) {
 			e.printStackTrace();
-		}
-		catch(IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return Response.status(200).entity(resp).build();
