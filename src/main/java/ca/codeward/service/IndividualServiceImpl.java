@@ -91,6 +91,8 @@ public class IndividualServiceImpl implements IndividualService {
 	@Path("/{key}")
 	public Response getIndividual(@PathParam("key") String id) {
 		String resp = "Error loading json - getIndividual()/{key}";
+		// List read not working for me, was trying to generate one via addIndividual, but couldn't write to remote json file.
+		// Then I have to figure out how to read specific individual based on provided key...
 		try {
 			ObjectMapper mapper = new ObjectMapper();
 			mapper.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
