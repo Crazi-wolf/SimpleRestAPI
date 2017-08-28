@@ -1,1 +1,30 @@
-{"Individual":[{"key":1234,"lastName":"WARD","firstName":"MATT","titlePrefix":"MR","birthDt":"1987-07-28","genderCd":"M","residenceAddress":{"addressLine1":"85-320 Westminster Ave.","city":"LONDON","territory":"ON","postalCode":"N6C 5H5"}}]}
+{
+	"List": [{
+		"key": 1234,
+		"lastName": "WARD",
+		"firstName": "MATT",
+		"titlePrefix": "MR",
+		"birthDt": "1987-07-28",
+		"genderCd": "M",
+		"residenceAddress": {
+			"addressLine1": "85-320 Westminster Ave.",
+			"city": "LONDON",
+			"territory": "ON",
+			"postalCode": "N6C 5H5"
+		}
+	},
+	{
+		"key": 4321,
+		"lastName": "A-AGASSI",
+		"firstName": "ANDRE",
+		"titlePrefix": "MR",
+		"birthDt": "1954-02-02",
+		"genderCd": "M",
+		"residenceAddress": {
+			"addressLine1": "278 FERRIS RD",
+			"city": "TORONTO",
+			"territory": "ON",
+			"postalCode": "M4B 1H6"
+		}
+	}]
+}

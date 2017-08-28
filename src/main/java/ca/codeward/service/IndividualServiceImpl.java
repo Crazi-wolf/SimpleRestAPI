@@ -18,6 +18,7 @@ import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.core.JsonToken;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -46,8 +47,9 @@ public class IndividualServiceImpl implements IndividualService {
 		try {
 			JsonGenerator gen = jf.createGenerator(jsonDoc, JsonEncoding.UTF8);
 			gen.writeStartObject();
-			gen.writeFieldName("Individual");
+			gen.writeFieldName("List");
 			gen.writeStartArray();
+			
 			gen.writeStartObject();
 			gen.writeNumberField("key", 1234);
 			gen.writeStringField("lastName", "WARD");
@@ -63,6 +65,23 @@ public class IndividualServiceImpl implements IndividualService {
 			gen.writeStringField("postalCode", "N6C 5H5");
 			gen.writeEndObject();
 			gen.writeEndObject();
+			
+			gen.writeStartObject();
+			gen.writeNumberField("key", 4321);
+			gen.writeStringField("lastName", "A-AGASSI");
+			gen.writeStringField("firstName", "ANDRE");
+			gen.writeStringField("titlePrefix", "MR");
+			gen.writeStringField("birthDt", "1954-02-02");
+			gen.writeStringField("genderCd", "M");
+			gen.writeFieldName("residenceAddress");
+			gen.writeStartObject();
+			gen.writeStringField("addressLine1", "278 FERRIS RD");
+			gen.writeStringField("city", "TORONTO");
+			gen.writeStringField("territory", "ON");
+			gen.writeStringField("postalCode", "M4B 1H6");
+			gen.writeEndObject();
+			gen.writeEndObject();
+			
 			gen.writeEndArray();
 			gen.writeEndObject();
 			gen.close();
@@ -85,18 +104,18 @@ public class IndividualServiceImpl implements IndividualService {
 	@Path("/{key}")
 	public Response getIndividual(@PathParam("key") String id) {
 		String resp = "Error loading json - getIndividual()/{key}";
+		ObjectMapper om = new ObjectMapper();
+		om.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
 		try {
-			ObjectMapper mapper = new ObjectMapper();
-			mapper.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
-			JsonParser parser = new JsonFactory().createParser(new URL("http://codeward.ca/content/individual.json"));
-			parser.nextToken();
-			Individual p1 = mapper.readValue(parser, Individual.class);
-			resp = mapper.writeValueAsString(p1);
-		}
-		catch(JsonParseException e) {
+			List<Individual> li = om.readValue(new File("Z:/projects/Eclipse/SimpleRestAPI/individual_test.json"), new TypeReference<List<Individual>>(){});
+			for(Individual i : li) {
+				if(i.getKey() == Integer.parseInt(id)) {
+					resp = om.writeValueAsString(i);
+				}
+			}
+		} catch (JsonParseException e) {
 			e.printStackTrace();
-		}
-		catch(IOException e) {
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return Response.status(200).entity(resp).build();
@@ -107,22 +126,15 @@ public class IndividualServiceImpl implements IndividualService {
 	public Response getAllIndividuals() {
 		String resp = "Error loading json - getAllIndividuals()";
 		ObjectMapper om = new ObjectMapper();
+		om.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
 		try {
-			JsonNode jn = om.readTree(new File("Z:/projects/Eclipse/SimpleRestAPI/individual_test.json"));
-			JsonNode in = jn.path("Individual");
-			String key = in.path("key").asText();
-			resp = key;			
-			
+			List<Individual> li = om.readValue(new File("Z:/projects/Eclipse/SimpleRestAPI/individual_test.json"), new TypeReference<List<Individual>>(){});
+			resp = om.writeValueAsString(li);
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
 		return Response.status(200).entity(resp).build();
-	}
-
-	public Response addIndividual(Individual p) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 }
