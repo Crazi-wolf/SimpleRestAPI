@@ -1,10 +1,9 @@
 package ca.codeward.service;
 
 import javax.ws.rs.core.Response;
-import ca.codeward.model.Individual;
 
 public interface IndividualService {
-	public Response addIndividual();
+	public Response addIndividual(String data);
 	
 	public Response deleteIndividual(int id);
 	

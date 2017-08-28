@@ -1,20 +1,6 @@
 {
 	"List": [{
 		"key": 1234,
-		"lastName": "WARD",
-		"firstName": "MATT",
-		"titlePrefix": "MR",
-		"birthDt": "1987-07-28",
-		"genderCd": "M",
-		"residenceAddress": {
-			"addressLine1": "85-320 Westminster Ave.",
-			"city": "LONDON",
-			"territory": "ON",
-			"postalCode": "N6C 5H5"
-		}
-	},
-	{
-		"key": 4321,
 		"lastName": "A-AGASSI",
 		"firstName": "ANDRE",
 		"titlePrefix": "MR",
@@ -25,6 +11,34 @@
 			"city": "TORONTO",
 			"territory": "ON",
 			"postalCode": "M4B 1H6"
+		}
+	},
+	{
+		"key": 4321,
+		"lastName": "WARD",
+		"firstName": "MATTHEW",
+		"titlePrefix": "MR",
+		"birthDt": "1954-02-02",
+		"genderCd": "M",
+		"residenceAddress": {
+			"addressLine1": "278 FERRIS RD",
+			"city": "TORONTO",
+			"territory": "ON",
+			"postalCode": "M4B 1H6"
+		}
+	},
+	{
+		"key": 3214,
+		"lastName": "CORNELIUS",
+		"firstName": "RANA",
+		"titlePrefix": "MS",
+		"birthDt": "1984-01-02",
+		"genderCd": "F",
+		"residenceAddress": {
+			"addressLine1": "76 ADSWOOD RD",
+			"city": "LONDON",
+			"territory": "ON",
+			"postalCode": "N6E 2W1"
 		}
 	}]
 }
