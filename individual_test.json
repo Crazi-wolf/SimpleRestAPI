@@ -26,19 +26,5 @@
 			"territory": "ON",
 			"postalCode": "M4B 1H6"
 		}
-	},
-	{
-		"key": 3214,
-		"lastName": "CORNELIUS",
-		"firstName": "RANA",
-		"titlePrefix": "MS",
-		"birthDt": "1984-01-02",
-		"genderCd": "F",
-		"residenceAddress": {
-			"addressLine1": "76 ADSWOOD RD",
-			"city": "LONDON",
-			"territory": "ON",
-			"postalCode": "N6E 2W1"
-		}
 	}]
 }

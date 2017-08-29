@@ -1,10 +1,9 @@
 package ca.codeward.model;
 
 import ca.codeward.model.ResidenceAddress;
-
 import com.fasterxml.jackson.annotation.JsonRootName;
 
-@JsonRootName(value="individual")
+@JsonRootName("individual")
 public class Individual {
 	private int key;
 	private String lastName;

@@ -18,7 +18,6 @@ import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.DeserializationFeature;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.SerializationFeature;
 
 import java.io.File;
 import java.io.IOException;
@@ -29,24 +28,25 @@ import ca.codeward.model.*;
 @Path("/individual")
 @JsonRootName(value = "individual")
 public class IndividualServiceImpl implements IndividualService {
+	
+	private final String PATH = "Z:/projects/Eclipse/SimpleRestAPI/individual_test.json";
 
 	@POST
 	@Consumes("application/json")
 	public Response addIndividual(@QueryParam("data") String inNew) {
+		// Set default response
 		String resp = "Error generating json - addindividual()";
 		ObjectMapper om = new ObjectMapper();
-		om.enable(SerializationFeature.INDENT_OUTPUT);
 		om.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
 		try {
 			// Get Existing list
-			List<Individual> li = om.readValue(new File("Z:/projects/Eclipse/SimpleRestAPI/individual_test.json"), new TypeReference<List<Individual>>(){});
+			List<Individual> li = om.readValue(new File(PATH), new TypeReference<List<Individual>>(){});
 			// Add new Individual to list
 			Individual i = createNewFromJsonStr(inNew, om);
 			if(i != null)
 				li.add(i);
 			// Now to store the new data
 			resp = saveJsonFromListOfIndividuals(li);
-			
 		} catch (JsonParseException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
@@ -55,6 +55,56 @@ public class IndividualServiceImpl implements IndividualService {
 		return Response.status(200).entity(resp).build();
 	}
 	
+	@GET
+	@Produces("application/json")
+	@Path("/{key}")
+	public Response getIndividual(@PathParam("key") String id) {
+		String resp = "Error loading json - getIndividual()/{key}";
+		ObjectMapper om = new ObjectMapper();
+		om.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
+		try {
+			boolean f = false;
+			List<Individual> li = om.readValue(new File(PATH), new TypeReference<List<Individual>>(){});
+			for(Individual i : li) {
+				if(i.getKey() == Integer.parseInt(id)) {
+					resp = om.writeValueAsString(i);
+					f = true;
+				}
+			}
+			if(!f) {
+				resp = "Key not found.";
+			}
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return Response.status(200).entity(resp).build();
+	}
+
+	@GET
+	@Produces("application/json")
+	public Response getAllIndividuals() {
+		String resp = "Error loading json - getAllIndividuals()";
+		ObjectMapper om = new ObjectMapper();
+		om.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
+		try {
+			List<Individual> li = om.readValue(new File(PATH), new TypeReference<List<Individual>>(){});
+			resp = om.writeValueAsString(li);
+		} catch (JsonParseException e) {
+			e.printStackTrace();
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		return Response.status(200).entity(resp).build();
+	}
+	
+	/**
+	 * Purpose: takes json string from POST, and converts to Individual.
+	 * @param json
+	 * @param om
+	 * @return
+	 */
 	private Individual createNewFromJsonStr(String json, ObjectMapper om) {
 		try {
 			Individual i = om.readValue(json, Individual.class);
@@ -69,6 +119,11 @@ public class IndividualServiceImpl implements IndividualService {
 		return null;
 	}
 	
+	/**
+	 * Purpose: takes List<Individuals>, and converts + saves json to file.
+	 * @param inList
+	 * @return
+	 */
 	private String saveJsonFromListOfIndividuals(List<Individual> inList) {
 		JsonFactory jf = new JsonFactory();
 		File jsonDoc = new File("Z:/projects/Eclipse/SimpleRestAPI/individual_test.json");
@@ -76,7 +131,7 @@ public class IndividualServiceImpl implements IndividualService {
 		try {
 			JsonGenerator gen = jf.createGenerator(jsonDoc, JsonEncoding.UTF8);
 			gen.writeStartObject();
-			gen.writeFieldName("List"); // Had to change to "List" until I can figure out how to re-associate List<Individual> value read
+			gen.writeFieldName("List"); // Had to change to "List"
 			gen.writeStartArray();
 			// Loop and store
 			for(Individual i : inList) {
@@ -104,53 +159,5 @@ public class IndividualServiceImpl implements IndividualService {
 			e.printStackTrace();
 		}
 		return resp;
-	}
-
-	public Response deleteIndividual(int id) {
-		return null;
-	}
-
-	@GET
-	@Produces("application/json")
-	@Path("/{key}")
-	public Response getIndividual(@PathParam("key") String id) {
-		String resp = "Error loading json - getIndividual()/{key}";
-		ObjectMapper om = new ObjectMapper();
-		om.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
-		try {
-			boolean f = false;
-			List<Individual> li = om.readValue(new File("Z:/projects/Eclipse/SimpleRestAPI/individual_test.json"), new TypeReference<List<Individual>>(){});
-			for(Individual i : li) {
-				if(i.getKey() == Integer.parseInt(id)) {
-					resp = om.writeValueAsString(i);
-					f = true;
-				}
-			}
-			if(!f) {
-				resp = "Key not found.";
-			}
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return Response.status(200).entity(resp).build();
-	}
-
-	@GET
-	@Produces("application/json")
-	public Response getAllIndividuals() {
-		String resp = "Error loading json - getAllIndividuals()";
-		ObjectMapper om = new ObjectMapper();
-		om.configure(DeserializationFeature.UNWRAP_ROOT_VALUE, true);
-		try {
-			List<Individual> li = om.readValue(new File("Z:/projects/Eclipse/SimpleRestAPI/individual_test.json"), new TypeReference<List<Individual>>(){});
-			resp = om.writeValueAsString(li);
-		} catch (JsonParseException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
-			e.printStackTrace();
-		}
-		return Response.status(200).entity(resp).build();
 	}
 }
